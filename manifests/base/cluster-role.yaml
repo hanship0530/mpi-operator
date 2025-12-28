@@ -69,9 +69,9 @@ rules:
 - apiGroups:
   - kubeflow.org
   resources:
-  - mpijobs
-  - mpijobs/finalizers
-  - mpijobs/status
+  - mpijobsv2
+  - mpijobsv2/finalizers
+  - mpijobsv2/status
   verbs:
   - "*"
 - apiGroups:
@@ -131,8 +131,8 @@ rules:
 - apiGroups:
   - kubeflow.org
   resources:
-  - mpijobs
-  - mpijobs/status
+  - mpijobsv2
+  - mpijobsv2/status
   verbs:
   - get
   - list
@@ -155,8 +155,8 @@ rules:
 - apiGroups:
   - kubeflow.org
   resources:
-  - mpijobs
-  - mpijobs/status
+  - mpijobsv2
+  - mpijobsv2/status
   verbs:
   - get
   - list

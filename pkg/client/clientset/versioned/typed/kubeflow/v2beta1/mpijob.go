@@ -61,7 +61,7 @@ type mPIJobs struct {
 func newMPIJobs(c *KubeflowV2beta1Client, namespace string) *mPIJobs {
 	return &mPIJobs{
 		gentype.NewClientWithListAndApply[*kubeflowv2beta1.MPIJob, *kubeflowv2beta1.MPIJobList, *applyconfigurationkubeflowv2beta1.MPIJobApplyConfiguration](
-			"mpijobs",
+			"mpijobsv2",
 			c.RESTClient(),
 			scheme.ParameterCodec,
 			namespace,

@@ -24,7 +24,7 @@ const (
 	// GroupName is the group name use in this package.
 	GroupName = "kubeflow.org"
 	// Kind is the kind name.
-	Kind = "MPIJob"
+	Kind = "MPIJobV2"
 	// GroupVersion is the version.
 	GroupVersion = "v2beta1"
 )
@@ -43,8 +43,13 @@ func Resource(resource string) schema.GroupResource {
 
 // addKnownTypes adds the set of types defined in this package to the supplied scheme.
 func addKnownTypes(scheme *runtime.Scheme) error {
-	scheme.AddKnownTypes(SchemeGroupVersion,
-		&MPIJob{},
+	// NOTE:
+	// - The Kubernetes CRD Kind for this API is intentionally "MPIJobV2" (not "MPIJob").
+	// - Keep the Go types as MPIJob/MPIJobList to avoid a massive regen across clients/SDKs.
+	// - Register the Kind names explicitly so encoding/decoding uses the CRD Kind.
+	scheme.AddKnownTypeWithName(SchemeGroupVersionKind, &MPIJob{})
+	scheme.AddKnownTypeWithName(
+		schema.GroupVersionKind{Group: GroupName, Version: GroupVersion, Kind: Kind + "List"},
 		&MPIJobList{},
 	)
 	metav1.AddToGroupVersion(scheme, SchemeGroupVersion)

@@ -390,8 +390,8 @@ func filterInformerActions(actions []core.Action) []core.Action {
 				action.Matches("watch", "podgroups") ||
 				action.Matches("list", "priorityclasses") ||
 				action.Matches("watch", "priorityclasses") ||
-				action.Matches("list", "mpijobs") ||
-				action.Matches("watch", "mpijobs")) {
+				action.Matches("list", "mpijobsv2") ||
+				action.Matches("watch", "mpijobsv2")) {
 			continue
 		}
 		ret = append(ret, action)
@@ -431,7 +431,7 @@ func (f *fixture) expectNoKubeActions() bool {
 }
 
 func (f *fixture) expectUpdateMPIJobStatusAction(mpiJob *kubeflow.MPIJob) {
-	action := core.NewUpdateAction(schema.GroupVersionResource{Resource: "mpijobs"}, mpiJob.Namespace, mpiJob)
+	action := core.NewUpdateAction(schema.GroupVersionResource{Resource: "mpijobsv2"}, mpiJob.Namespace, mpiJob)
 	action.Subresource = "status"
 	f.actions = append(f.actions, action)
 }

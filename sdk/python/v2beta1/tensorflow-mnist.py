@@ -123,6 +123,6 @@ crd_api.create_namespaced_custom_object(
     group="kubeflow.org",
     version="v2beta1",
     namespace="default",
-    plural="mpijobs",
+    plural="mpijobsv2",
     body=job
 )

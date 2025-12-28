@@ -23,6 +23,7 @@ import (
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
+// +kubebuilder:resource:path=mpijobsv2,singular=mpijobv2
 
 type MPIJob struct {
 	metav1.TypeMeta   `json:",inline"`

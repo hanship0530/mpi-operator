@@ -16,11 +16,11 @@ BIN_DIR=_output/cmd/bin
 REPO_PATH="github.com/kubeflow/mpi-operator"
 GitSHA=$(shell git rev-parse HEAD)
 Date=$(shell date "+%Y-%m-%d %H:%M:%S")
-RELEASE_VERSION?=v0.7.0
+RELEASE_VERSION?=v0.7.2
 CONTROLLER_VERSION?=v2
 BASE_IMAGE_SSH_PORT?=2222
 IMG_BUILDER=docker
-PLATFORMS ?= linux/amd64,linux/arm64,linux/ppc64le
+PLATFORMS = linux/amd64
 INTEL_PLATFORMS ?= linux/amd64
 MPICH_PLATFORMS ?= linux/amd64,linux/arm64
 LD_FLAGS_V2=" \
@@ -35,8 +35,8 @@ HELM_VERSION=v3.11.2
 KUBECTL_VERSION=v1.34.0
 ENVTEST_K8S_VERSION=1.34.0
 PROJECT_DIR := $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))
-GOARCH=$(shell go env GOARCH)
-GOOS=$(shell go env GOOS)
+GOARCH?=amd64
+GOOS?=linux
 # Use go.mod go version as a single source of truth of scheduler-plugins version.
 SCHEDULER_PLUGINS_VERSION?=$(shell go list -m -f "{{.Version}}" sigs.k8s.io/scheduler-plugins)
 VOLCANO_SCHEDULER_VERSION?=$(shell go list -m -f "{{.Version}}" volcano.sh/apis)
@@ -52,7 +52,7 @@ all: ${BIN_DIR} fmt vet tidy lint test mpi-operator.v2
 
 .PHONY: mpi-operator.v2
 mpi-operator.v2:
-	go build -ldflags ${LD_FLAGS_V2} -o ${BIN_DIR}/mpi-operator.v2 ./cmd/mpi-operator/
+	GOOS=$(GOOS) GOARCH=$(GOARCH) go build -ldflags ${LD_FLAGS_V2} -o ${BIN_DIR}/mpi-operator.v2 ./cmd/mpi-operator/
 
 ${BIN_DIR}:
 	mkdir -p ${BIN_DIR}
@@ -106,6 +106,9 @@ images:
 	@echo "VERSION: ${RELEASE_VERSION}"
 	${IMG_BUILDER} build $(BUILD_ARGS) --platform $(PLATFORMS) --build-arg VERSION=${CONTROLLER_VERSION} --build-arg RELEASE_VERSION=${RELEASE_VERSION} -t ${IMAGE_NAME}:${RELEASE_VERSION} .
 
+push:
+	docker tag ${IMAGE_NAME}:${RELEASE_VERSION} hanship0915/mpi-operator:${RELEASE_VERSION}
+	docker push hanship0915/mpi-operator:${RELEASE_VERSION}
 .PHONY: test_images
 test_images:
 	${IMG_BUILDER} build $(BUILD_ARGS) --platform $(PLATFORMS) --build-arg port=${BASE_IMAGE_SSH_PORT} -t ${REGISTRY}/base:${RELEASE_VERSION} build/base

@@ -68,7 +68,7 @@ You can create an MPI job by defining an `MPIJob` config file. See [TensorFlow b
 cat examples/v2beta1/tensorflow-benchmarks/tensorflow-benchmarks.yaml
 ```
 
-Deploy the `MPIJob` resource to start training:
+Deploy the `MPIJobV2` resource to start training:
 
 ```
 kubectl apply -f examples/v2beta1/tensorflow-benchmarks/tensorflow-benchmarks.yaml
@@ -84,7 +84,7 @@ kubectl get -o yaml mpijobs tensorflow-benchmarks
 
 ```
 apiVersion: kubeflow.org/v2beta1
-kind: MPIJob
+kind: MPIJobV2
 metadata:
   creationTimestamp: "2019-07-09T22:15:51Z"
   generation: 1

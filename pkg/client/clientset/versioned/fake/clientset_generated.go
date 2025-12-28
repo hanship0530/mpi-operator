@@ -18,11 +18,13 @@ package fake
 
 import (
 	applyconfiguration "github.com/kubeflow/mpi-operator/pkg/client/applyconfiguration"
+	kubeflowapisv2beta1 "github.com/kubeflow/mpi-operator/pkg/apis/kubeflow/v2beta1"
 	clientset "github.com/kubeflow/mpi-operator/pkg/client/clientset/versioned"
 	kubeflowv2beta1 "github.com/kubeflow/mpi-operator/pkg/client/clientset/versioned/typed/kubeflow/v2beta1"
 	fakekubeflowv2beta1 "github.com/kubeflow/mpi-operator/pkg/client/clientset/versioned/typed/kubeflow/v2beta1/fake"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/discovery"
 	fakediscovery "k8s.io/client-go/discovery/fake"
@@ -40,6 +42,16 @@ import (
 func NewSimpleClientset(objects ...runtime.Object) *Clientset {
 	o := testing.NewObjectTracker(scheme, codecs.UniversalDecoder())
 	for _, obj := range objects {
+		// For our CRD, Kind ("MPIJobV2") does not map to the plural resource name ("mpijobsv2")
+		// via UnsafeGuessKindToResource, which the object tracker uses for Add().
+		// Seed the tracker using an explicit GVR for MPIJobs, so unit tests remain reliable.
+		if mpiJob, ok := obj.(*kubeflowapisv2beta1.MPIJob); ok {
+			gvr := schema.GroupVersionResource{Group: kubeflowapisv2beta1.GroupName, Version: kubeflowapisv2beta1.GroupVersion, Resource: "mpijobsv2"}
+			if err := o.Create(gvr, mpiJob, mpiJob.Namespace); err != nil {
+				panic(err)
+			}
+			continue
+		}
 		if err := o.Add(obj); err != nil {
 			panic(err)
 		}
@@ -93,6 +105,15 @@ func NewClientset(objects ...runtime.Object) *Clientset {
 		applyconfiguration.NewTypeConverter(scheme),
 	)
 	for _, obj := range objects {
+		// See comment in NewSimpleClientset: seed MPIJobs via explicit GVR to avoid
+		// Kind->Resource guessing issues when Kind != plural resource name.
+		if mpiJob, ok := obj.(*kubeflowapisv2beta1.MPIJob); ok {
+			gvr := schema.GroupVersionResource{Group: kubeflowapisv2beta1.GroupName, Version: kubeflowapisv2beta1.GroupVersion, Resource: "mpijobsv2"}
+			if err := o.Create(gvr, mpiJob, mpiJob.Namespace); err != nil {
+				panic(err)
+			}
+			continue
+		}
 		if err := o.Add(obj); err != nil {
 			panic(err)
 		}

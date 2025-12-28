@@ -34,8 +34,8 @@ func newFakeMPIJobs(fake *FakeKubeflowV2beta1, namespace string) typedkubeflowv2
 		gentype.NewFakeClientWithListAndApply[*v2beta1.MPIJob, *v2beta1.MPIJobList, *kubeflowv2beta1.MPIJobApplyConfiguration](
 			fake.Fake,
 			namespace,
-			v2beta1.SchemeGroupVersion.WithResource("mpijobs"),
-			v2beta1.SchemeGroupVersion.WithKind("MPIJob"),
+			v2beta1.SchemeGroupVersion.WithResource("mpijobsv2"),
+			v2beta1.SchemeGroupVersion.WithKind("MPIJobV2"),
 			func() *v2beta1.MPIJob { return &v2beta1.MPIJob{} },
 			func() *v2beta1.MPIJobList { return &v2beta1.MPIJobList{} },
 			func(dst, src *v2beta1.MPIJobList) { dst.ListMeta = src.ListMeta },

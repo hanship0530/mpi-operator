@@ -37,7 +37,7 @@ func MPIJob(name, namespace string) *MPIJobApplyConfiguration {
 	b := &MPIJobApplyConfiguration{}
 	b.WithName(name)
 	b.WithNamespace(namespace)
-	b.WithKind("MPIJob")
+	b.WithKind("MPIJobV2")
 	b.WithAPIVersion("kubeflow.org/v2beta1")
 	return b
 }
