@@ -51,3 +51,24 @@ kubectl get crd mpijobsv2.kubeflow.org
 
 # MPIJob 리소스 확인 (새 이름으로)
 kubectl get mpijobsv2 -A
+
+# 한번에 삭제
+kubectl delete -f deploy/v2beta1/mpi-operator.yaml
+
+# 삭제 시
+kubectl delete mpijobsv2 --all --all-namespaces
+kubectl delete deployment mpi-operator -n mpi-operator
+kubectl delete clusterrolebinding mpi-operator
+kubectl delete clusterrole mpi-operator
+kubectl delete clusterrole kubeflow-mpijobs-admin
+kubectl delete clusterrole kubeflow-mpijobs-edit
+kubectl delete clusterrole kubeflow-mpijobs-view
+kubectl delete serviceaccount mpi-operator -n mpi-operator
+kubectl delete crd mpijobsv2.kubeflow.org
+kubectl delete namespace mpi-operator
+
+# 삭제 확인
+kubectl get namespace mpi-operator
+kubectl get crd mpijobsv2.kubeflow.org
+kubectl get clusterrole | grep mpi
+kubectl get clusterrolebinding | grep mpi
